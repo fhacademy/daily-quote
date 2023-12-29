@@ -1,5 +1,4 @@
 import 'dart:collection';
-
 import 'package:daily_quote/quote/model.dart';
 import 'package:daily_quote/quote/repository.dart';
 import 'package:flutter/material.dart';

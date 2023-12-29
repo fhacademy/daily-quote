@@ -1,4 +1,4 @@
-import 'package:daily_quote/quote/viewmodel.dart';
+import 'package:daily_quote/quote/view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
