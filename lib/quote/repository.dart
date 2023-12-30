@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:daily_quote/quote/model.dart';
 
 class QuoteRepository {
-  final List<Quote> _quotes = [
+  List<Quote> _quotes = [
     Quote(
         text:
             'The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart.',
@@ -57,7 +57,15 @@ class QuoteRepository {
             'The only way to do great work is to love what you do. If you haven’t found it yet, keep looking. Don’t settle.',
         author: 'Steve Jobs'),
   ];
-  final List<Quote> _favorites = [];
+  List<Quote> _favorites = [];
+
+  set quotes(List<Quote> quotes) {
+    _quotes = quotes;
+  }
+
+  set favorites(List<Quote> quotes) {
+    _favorites = quotes;
+  }
 
   List<Quote> getQuotes() {
     return _quotes;

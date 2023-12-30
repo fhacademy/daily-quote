@@ -9,9 +9,11 @@ class BaseApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: Intl.message('Flutter Demo'),
+      title: Intl.message('Random Quote'),
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color.fromARGB(87, 96, 96, 158),
+        ),
         useMaterial3: true,
       ),
       home: const HomeScreen(),

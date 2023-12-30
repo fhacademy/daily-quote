@@ -1,4 +1,3 @@
-import 'package:daily_quote/constants.dart';
 import 'package:daily_quote/quote/view_model.dart';
 import 'package:daily_quote/screens/favorites.dart';
 import 'package:daily_quote/screens/parts/add_quote_form.dart';
@@ -19,6 +18,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String _name = "";
   String? _email;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +34,72 @@ class _HomeScreenState extends State<HomeScreen> {
     final quoteText = quoteModel.quote.text;
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: theme.primaryColor,
-      appBar: MainAppBar(height: 150, quoteAuthor: quoteAuthor),
+      floatingActionButton: FloatingActionButton(
+        mini: true,
+        tooltip: Intl.message('Add a new quote'),
+        child: const Icon(Icons.add),
+        onPressed: () {
+          showModalBottomSheet<void>(
+              context: context,
+              builder: (BuildContext context) {
+                return Container(
+                  padding: const EdgeInsets.all(20.0),
+                  child: const AddQuoteForm(),
+                );
+              });
+        },
+      ),
+      appBar: AppBar(
+        backgroundColor: theme.colorScheme.onPrimary,
+        centerTitle: true,
+        title: Text(
+          quoteAuthor,
+          style: theme.textTheme.titleLarge!
+              .copyWith(color: theme.colorScheme.primary),
+        ),
+        leading: IconButton(
+          iconSize: 30.0,
+          onPressed: () {
+            quoteModel.changeQuote();
+          },
+          icon: Icon(
+            Icons.space_dashboard,
+            color: theme.colorScheme.primary,
+          ),
+        ),
+        actions: [
+          GestureDetector(
+            onTap: () => _scaffoldKey.currentState!.openEndDrawer(),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: CircleAvatar(
+                radius: 15.0,
+                backgroundColor: theme.colorScheme.primary,
+                child: userModel.user != null
+                    ? Text(
+                        userModel.user!.name
+                            .toString()
+                            .substring(0, 2)
+                            .toUpperCase(),
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                          color: theme.colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    : Text(
+                        "QT",
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                          color: theme.colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+              ),
+            ),
+          ),
+        ],
+      ),
       endDrawer: Drawer(
         child: ListView(
           children: [
@@ -38,9 +107,27 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CircleAvatar(
-                    radius: (40.0),
-                    backgroundImage: AssetImage(ImagesPath.profile),
+                  CircleAvatar(
+                    radius: 30.0,
+                    backgroundColor: theme.colorScheme.primary,
+                    child: userModel.user != null
+                        ? Text(
+                            userModel.user!.name
+                                .toString()
+                                .substring(0, 2)
+                                .toUpperCase(),
+                            style: theme.textTheme.titleLarge!.copyWith(
+                              color: theme.colorScheme.onPrimary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        : Text(
+                            "QT",
+                            style: theme.textTheme.titleLarge!.copyWith(
+                              color: theme.colorScheme.onPrimary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                   Text(
                     (userModel.user != null) ? userModel.user!.name : "Quote",
@@ -153,23 +240,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
-                            padding: EdgeInsets.zero,
-                            tooltip: Intl.message('Add a new quote'),
-                            onPressed: () {
-                              showModalBottomSheet<void>(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Container(
-                                      padding: const EdgeInsets.all(20.0),
-                                      child: const AddQuoteForm(),
-                                    );
-                                  });
-                            },
-                            icon: Icon(
-                              Icons.post_add,
-                              color: theme.colorScheme.onPrimary,
-                            )),
-                        IconButton(
                           padding: EdgeInsets.zero,
                           tooltip: Intl.message('Add to favorites'),
                           onPressed: () {
@@ -216,64 +286,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ]),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final double height;
-  const MainAppBar({
-    super.key,
-    required this.height,
-    required this.quoteAuthor,
-  });
-
-  final String quoteAuthor;
-
-  @override
-  Size get preferredSize => Size.fromHeight(height);
-
-  @override
-  Widget build(BuildContext context) {
-    ScaffoldState? scaffoldState =
-        context.findAncestorStateOfType<ScaffoldState>();
-    ThemeData theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(top: 60.0, right: 10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-              iconSize: 40.0,
-              onPressed: () {
-                Provider.of<QuoteViewModel>(context, listen: false)
-                    .changeQuote();
-              },
-              icon: Icon(
-                Icons.space_dashboard,
-                color: theme.colorScheme.onPrimary,
-              )),
-          Text(
-            quoteAuthor,
-            style: theme.textTheme.titleLarge!
-                .copyWith(color: theme.colorScheme.onPrimary),
-          ),
-          GestureDetector(
-            onTap: () => scaffoldState!.openEndDrawer(),
-            child: CircleAvatar(
-              backgroundColor: theme.colorScheme.onPrimary,
-              child: Consumer<UserViewModel>(
-                builder: (context, model, child) => model.user != null
-                    ? Text(model.user!.name
-                        .toString()
-                        .substring(0, 2)
-                        .toUpperCase())
-                    : const Text("QT"),
-              ),
             ),
           ),
         ],

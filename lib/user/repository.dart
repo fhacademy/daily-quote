@@ -1,12 +1,11 @@
 import 'package:daily_quote/user/model.dart';
 
 class UserRepository {
-  User? _user;
   List<User> get users => <User>[];
-  User? get user => _user;
+  User? user;
 
   void create({required String name, String? email, String? profileImagePath}) {
-    _user ??= User(
+    user ??= User(
       email: email,
       name: name,
       profileImagePath: profileImagePath,
@@ -14,11 +13,12 @@ class UserRepository {
   }
 
   void update({String? name, String? email, String? profileImagePath}) {
-    if (_user == null && name != null) {
+    if (user == null && name!.isNotEmpty) {
       create(name: name, email: email, profileImagePath: profileImagePath);
-    } else {}
-    _user!.name = name ?? _user!.name;
-    _user!.email = email ?? _user!.email;
-    _user!.profileImagePath = profileImagePath ?? _user!.profileImagePath;
+    } else if (user != null) {
+      user!.name = name != null && name.isNotEmpty ? name : user!.name;
+      user!.email = email ?? user!.email;
+      user!.profileImagePath = profileImagePath ?? user!.profileImagePath;
+    }
   }
 }

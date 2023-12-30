@@ -19,7 +19,7 @@ class ListQuoteDisplay extends StatelessWidget {
     ThemeData theme = Theme.of(context);
     return Stack(children: [
       Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Card(
             color: Colors.transparent,
